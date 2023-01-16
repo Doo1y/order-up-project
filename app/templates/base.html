@@ -1,4 +1,7 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <html>
+
   <head>
     {% if title %}
     <title>{{ title }} - Order Up!</title>
@@ -6,12 +9,15 @@
     <title>Welcome to Order Up!</title>
     {% endif %}
   </head>
+
   <body>
-    {% block content %}{% endblock %}
     {% if not current_user.is_anonymous %}
     <form method="post" action="{{ url_for('session.logout')  }}">
+      {{ form.csrf_token }}
       <button>Logout</button>
     </form>
     {% endif %}
+    {% block content %}{% endblock %}
   </body>
+
 </html>

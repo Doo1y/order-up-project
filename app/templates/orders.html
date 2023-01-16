@@ -1,5 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Order up!</h1>
+<form method="POST">
+  {{ form.csrf_token() }}
+  <div>
+    ASSIGN TABLE
+    {{ form.tables }}
+    {{ form.servers }}
+    {{ form.assign }}
+  </div>
+</form>
+<table>
+  YOUR OPEN ORDERS:
+  {% for order in orders %}
+  <tr>
+    <th>Table {{ order.table.number }}</th>
+    <td> Current Tab: ${{ order.total }} </td>
+    <td>
+      <button formaction="{{ url_for('.show_details', id=order.id) }}">ORDER DETAILS</button>
+    </td>
+    <td>
+      <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button formaction="{{ url_for('.close_order', id=order.id) }}">CLOSE ORDER</button>
+      </form>
+    </td>
+    <td>
+      <button form="food-list" formaction="{{ url_for('.add_to_order', id = order.id) }}">
+        ADD TO ORDER
+      </button>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<form id='food-list' method="POST">
+  {{ form.csrf_token }}
+  {% for food_type in menu %}
+  <p>{{ food_type }}</p>
+  {% for food_item in menu[food_type] %}
+  <input type="checkbox" name="menu_item_ids" id="item_{{ food_item.id }}" value="{{ food_item.id }}">
+  <label for="item_{{ food_item.id }}">{{ food_item.name }}</label>
+  {% endfor %}
+  {% endfor %}
+</form>
+
 {% endblock %}
